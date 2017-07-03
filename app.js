@@ -16,7 +16,7 @@ const MAX_CONVERSATIONS = 'Limit of messages reached. Clearing chat.';
 /** Conversation */
 class Conversation {
   /**
-   * Create a conversation
+   * Create a conversation.
    * @param {number} id Id of the conversation.
    * @param {number} name Name of the conversation.
    * @constructor
@@ -50,7 +50,7 @@ class Conversation {
 /** Message */
 class Message {
   /**
-   * Create a message
+   * Create a message.
    * @param {number} user User of the conversation.
    * @param {string} message Message.
    * @param {string} date When the message was sent.
@@ -91,7 +91,7 @@ class Message {
 /** User */
 class User {
   /**
-   * Create a message
+   * Create a user.
    * @param {object} client Client, used as identifier.
    * @param {number} id Id of the user.
    * @param {string} name Name of the user.
@@ -289,7 +289,7 @@ function getUser(client) {
  * Get user index in users list.
  * @param {object} client Client, used as identifier.
  * @return {number} i The index.
- * @return {null} null Returns null if user not found.
+ * @return {null} Returns null if user not found.
  */
 function getUserIndex(client) {
   for (let i = 0; i < users.length; i++) {

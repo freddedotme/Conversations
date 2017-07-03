@@ -26,6 +26,7 @@
     "eslint-config-airbnb-base": "^11.2.0",
     "eslint-config-google": "^0.8.0",
     "eslint-plugin-import": "^2.6.1",
+    "jsdoc": "^3.4.3",
     "nodejs-websocket": "^1.7.1"
   }
 }
