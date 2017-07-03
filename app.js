@@ -55,9 +55,7 @@ ws.createServer(function(client) {
     switch (action) {
       case 0:
         // send message
-        console.log('runs');
         let index = user.getConversation();
-        console.log('runs');
         conversations[index].addMessage(user, value);
         update();
         break;
