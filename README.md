@@ -8,13 +8,13 @@ http://fredde.me/Conversations/
 1. Clone this repo.
 2. `cd Conversations/` 
 3. `npm install`
-4. `npm start`
-5. Open up `client/client.html`.
-6. Make an awesome interface and send a pull request.
+4. Open up `config.json` and modify settings for your liking.
+5. `npm start`
+6. Open up `client/client.html`.
+7. Make an awesome interface and send a pull request.
 
 ### How it works
 Conversations sends a JSON object from the websocket server to the client whenever someone joins, sends a message, update their name or change conversation (room). The format of the JSON object looks like this:
-
 
     {
       "users":[
@@ -47,5 +47,4 @@ Conversations sends a JSON object from the websocket server to the client whenev
       ]
     }
 
-
-
+There is no interface as of now and will be added sooner or later. If you feel like helping me out I'd appreciate it a lot!
