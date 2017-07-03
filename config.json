@@ -1,0 +1,6 @@
+{
+  "port": 8001,
+  "maxClients": 256,
+  "maxConversations": 16,
+  "maxMessages": 2048
+}

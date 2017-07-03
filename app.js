@@ -1,166 +1,30 @@
 // -----------------------------------------------------------------------------
-// | Constants
-// -----------------------------------------------------------------------------
+// | Default settings
+// ----------------------------------------------------------------------------
 
-// const maxClients = 256;
-// const maxConversations = 16;
-const maxMessages = 2048;
+const User = require('./classes/user.js');
+const Conversation = require('./classes/conversation.js');
+
+const config = require('./config.json');
 const ws = require('nodejs-websocket');
 
-const MAX_CONVERSATIONS = 'Limit of messages reached. Clearing chat.';
+let port = 8001;
+let maxClients = 256;
+let maxConversations = 16;
+let maxMessages = 2048;
 
-// -----------------------------------------------------------------------------
-// | Conversation
-// -----------------------------------------------------------------------------
+if (config.port != null && !isNaN(config.port)) port = config.port;
+if (config.maxClients != null &&
+    !isNaN(config.maxMessages)) maxClients = config.maxClients;
+if (config.maxConversations != null &&
+    !isNaN(config.maxConversations)) maxConversations = config.maxConversations;
+if (config.maxMessages != null &&
+    !isNaN(config.maxMessages)) maxMessages = config.maxMessages;
 
-/** Conversation */
-class Conversation {
-  /**
-   * Create a conversation.
-   * @param {number} id Id of the conversation.
-   * @param {number} name Name of the conversation.
-   * @constructor
-   */
-  constructor(id, name) {
-    this.id = id;
-    this.name = name;
-    this.messages = [];
-  }
-
-  /**
-   * Add a new message to the conversation, clears chat if limit reached.
-   * @param {number} user User of the message.
-   * @param {string} message Message.
-   */
-  addMessage(user, message) {
-    if (this.messages.length >= maxMessages) {
-      this.messages = [];
-      this.messages.push(
-          new Message(-1, MAX_CONVERSATIONS, getFormattedDate()));
-    }
-    this.messages.push(
-        new Message(user.getId(), message, getFormattedDate()));
-  }
-}
-
-// -----------------------------------------------------------------------------
-// | Message
-// -----------------------------------------------------------------------------
-
-/** Message */
-class Message {
-  /**
-   * Create a message.
-   * @param {number} user User of the conversation.
-   * @param {string} message Message.
-   * @param {string} date When the message was sent.
-   * @constructor
-   */
-  constructor(user, message, date) {
-    this.user = user;
-    this.message = message;
-    this.date = date;
-  }
-
-  /**
-   * @return {int} The user id.
-   */
-  getUser() {
-    return this.user;
-  }
-
-  /**
-   * @return {string} The message.
-   */
-  getMessage() {
-    return this.message;
-  }
-
-  /**
-   * @return {string} The date of the message.
-   */
-  getDate() {
-    return this.date;
-  }
-}
-
-// -----------------------------------------------------------------------------
-// | User
-// -----------------------------------------------------------------------------
-
-/** User */
-class User {
-  /**
-   * Create a user.
-   * @param {object} client Client, used as identifier.
-   * @param {number} id Id of the user.
-   * @param {string} name Name of the user.
-   * @param {number} conversation Id of active conversation.
-   * @constructor
-   */
-  constructor(client, id, name, conversation) {
-    this.client = client;
-    this.id = id;
-    this.name = name;
-    this.conversation = conversation;
-  }
-
-  /**
-   * @return {object} The client.
-   */
-  getClient() {
-    return this.client;
-  }
-
-  /**
-   * @param {object} client Set client.
-   */
-  setClient(client) {
-    this.client = client;
-  }
-
-  /**
-   * @return {number} The user id.
-   */
-  getId() {
-    return this.id;
-  }
-
-  /**
-   * @param {number} id Set id.
-   */
-  setId(id) {
-    this.id = id;
-  }
-
-  /**
-   * @return {string} The name.
-   */
-  getName() {
-    return this.name;
-  }
-
-  /**
-   * @param {string} name Set name.
-   */
-  setName(name) {
-    this.name = name;
-  }
-
-  /**
-   * @return {id} The conversation.
-   */
-  getConversation() {
-    return this.conversation;
-  }
-
-  /**
-   * @param {number} conversation Set conversation.
-   */
-  setConversation(conversation) {
-    this.conversation = conversation;
-  }
-}
+exports.port = port;
+exports.maxClients = maxClients;
+exports.maxConversations = maxConversations;
+exports.maxMessages = maxMessages;
 
 // -----------------------------------------------------------------------------
 // | Server
@@ -216,7 +80,7 @@ ws.createServer(function(client) {
   });
 
   visits++;
-}).listen(8001);
+}).listen(port);
 
 // -----------------------------------------------------------------------------
 // | Communication
@@ -296,24 +160,4 @@ function getUserIndex(client) {
     if (users[i].getClient() === client) return i;
   }
   return null;
-}
-
-/**
- * Get date as a formatted string.
- * @return {string} date The formatted date as a string.
- */
-function getFormattedDate() {
-  let today = new Date();
-  let mm = today.getMinutes();
-  let hh = today.getHours();
-  let dd = today.getDate();
-  let MM = today.getMonth() + 1;
-  let yyyy = today.getFullYear();
-
-  if (dd < 10) dd = '0' + dd;
-  if (MM < 10) MM = '0' + MM;
-  if (hh < 10) hh = '0' + hh;
-  if (mm < 10) mm = '0' + mm;
-
-  return yyyy + '-' + MM + '-' + dd + ' ' + hh + ':' + mm;
 }
