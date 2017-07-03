@@ -13,6 +13,9 @@ http://fredde.me/Conversations/
 6. Open up `client/client.html`.
 7. Make an awesome interface and send a pull request.
 
+### Update documentation
+If you need to update the documentation, run `npm run jsdoc`.
+
 ### How it works
 Conversations sends a JSON object from the websocket server to the client whenever someone joins, sends a message, update their name or change conversation (room). The format of the JSON object looks like this:
 
