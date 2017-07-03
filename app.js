@@ -125,7 +125,7 @@ function broadcast(data) {
  * @param {object} client Client, used as identifier.
  */
 function addUser(client) {
-  users.push(new User(client, visits, 'random', 1));
+  users.push(new User(client, visits, visits.toString(), 1));
 }
 
 /**
