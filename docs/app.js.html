@@ -26,169 +26,33 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>// -----------------------------------------------------------------------------
-// | Constants
-// -----------------------------------------------------------------------------
+            <pre class="prettyprint source linenums"><code>const User = require('./classes/user.js');
+const Conversation = require('./classes/conversation.js');
 
-// const maxClients = 256;
-// const maxConversations = 16;
-const maxMessages = 2048;
+const config = require('./config.json');
 const ws = require('nodejs-websocket');
 
-const MAX_CONVERSATIONS = 'Limit of messages reached. Clearing chat.';
-
 // -----------------------------------------------------------------------------
-// | Conversation
-// -----------------------------------------------------------------------------
+// | Default settings
+// ----------------------------------------------------------------------------
 
-/** Conversation */
-class Conversation {
-  /**
-   * Create a conversation.
-   * @param {number} id Id of the conversation.
-   * @param {number} name Name of the conversation.
-   * @constructor
-   */
-  constructor(id, name) {
-    this.id = id;
-    this.name = name;
-    this.messages = [];
-  }
+let port = 8001;
+let maxClients = 256;
+let maxConversations = 16;
+let maxMessages = 2048;
 
-  /**
-   * Add a new message to the conversation, clears chat if limit reached.
-   * @param {number} user User of the message.
-   * @param {string} message Message.
-   */
-  addMessage(user, message) {
-    if (this.messages.length >= maxMessages) {
-      this.messages = [];
-      this.messages.push(
-          new Message(-1, MAX_CONVERSATIONS, getFormattedDate()));
-    }
-    this.messages.push(
-        new Message(user.getId(), message, getFormattedDate()));
-  }
-}
+if (config.port != null &amp;&amp; !isNaN(config.port)) port = config.port;
+if (config.maxClients != null &amp;&amp;
+    !isNaN(config.maxMessages)) maxClients = config.maxClients;
+if (config.maxConversations != null &amp;&amp;
+    !isNaN(config.maxConversations)) maxConversations = config.maxConversations;
+if (config.maxMessages != null &amp;&amp;
+    !isNaN(config.maxMessages)) maxMessages = config.maxMessages;
 
-// -----------------------------------------------------------------------------
-// | Message
-// -----------------------------------------------------------------------------
-
-/** Message */
-class Message {
-  /**
-   * Create a message.
-   * @param {number} user User of the conversation.
-   * @param {string} message Message.
-   * @param {string} date When the message was sent.
-   * @constructor
-   */
-  constructor(user, message, date) {
-    this.user = user;
-    this.message = message;
-    this.date = date;
-  }
-
-  /**
-   * @return {int} The user id.
-   */
-  getUser() {
-    return this.user;
-  }
-
-  /**
-   * @return {string} The message.
-   */
-  getMessage() {
-    return this.message;
-  }
-
-  /**
-   * @return {string} The date of the message.
-   */
-  getDate() {
-    return this.date;
-  }
-}
-
-// -----------------------------------------------------------------------------
-// | User
-// -----------------------------------------------------------------------------
-
-/** User */
-class User {
-  /**
-   * Create a user.
-   * @param {object} client Client, used as identifier.
-   * @param {number} id Id of the user.
-   * @param {string} name Name of the user.
-   * @param {number} conversation Id of active conversation.
-   * @constructor
-   */
-  constructor(client, id, name, conversation) {
-    this.client = client;
-    this.id = id;
-    this.name = name;
-    this.conversation = conversation;
-  }
-
-  /**
-   * @return {object} The client.
-   */
-  getClient() {
-    return this.client;
-  }
-
-  /**
-   * @param {object} client Set client.
-   */
-  setClient(client) {
-    this.client = client;
-  }
-
-  /**
-   * @return {number} The user id.
-   */
-  getId() {
-    return this.id;
-  }
-
-  /**
-   * @param {number} id Set id.
-   */
-  setId(id) {
-    this.id = id;
-  }
-
-  /**
-   * @return {string} The name.
-   */
-  getName() {
-    return this.name;
-  }
-
-  /**
-   * @param {string} name Set name.
-   */
-  setName(name) {
-    this.name = name;
-  }
-
-  /**
-   * @return {id} The conversation.
-   */
-  getConversation() {
-    return this.conversation;
-  }
-
-  /**
-   * @param {number} conversation Set conversation.
-   */
-  setConversation(conversation) {
-    this.conversation = conversation;
-  }
-}
+exports.port = port;
+exports.maxClients = maxClients;
+exports.maxConversations = maxConversations;
+exports.maxMessages = maxMessages;
 
 // -----------------------------------------------------------------------------
 // | Server
@@ -219,9 +83,7 @@ ws.createServer(function(client) {
     switch (action) {
       case 0:
         // send message
-        console.log('runs');
         let index = user.getConversation();
-        console.log('runs');
         conversations[index].addMessage(user, value);
         update();
         break;
@@ -244,7 +106,7 @@ ws.createServer(function(client) {
   });
 
   visits++;
-}).listen(8001);
+}).listen(port);
 
 // -----------------------------------------------------------------------------
 // | Communication
@@ -289,7 +151,7 @@ function broadcast(data) {
  * @param {object} client Client, used as identifier.
  */
 function addUser(client) {
-  users.push(new User(client, visits, 'random', 1));
+  users.push(new User(client, visits, visits.toString(), 1));
 }
 
 /**
@@ -325,26 +187,6 @@ function getUserIndex(client) {
   }
   return null;
 }
-
-/**
- * Get date as a formatted string.
- * @return {string} date The formatted date as a string.
- */
-function getFormattedDate() {
-  let today = new Date();
-  let mm = today.getMinutes();
-  let hh = today.getHours();
-  let dd = today.getDate();
-  let MM = today.getMonth() + 1;
-  let yyyy = today.getFullYear();
-
-  if (dd &lt; 10) dd = '0' + dd;
-  if (MM &lt; 10) MM = '0' + MM;
-  if (hh &lt; 10) hh = '0' + hh;
-  if (mm &lt; 10) mm = '0' + mm;
-
-  return yyyy + '-' + MM + '-' + dd + ' ' + hh + ':' + mm;
-}
 </code></pre>
         </article>
     </section>
@@ -355,13 +197,13 @@ function getFormattedDate() {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Conversation.html">Conversation</a></li><li><a href="Message.html">Message</a></li><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#broadcast">broadcast</a></li><li><a href="global.html#debug">debug</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#getFormattedDate">getFormattedDate</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getUserIndex">getUserIndex</a></li><li><a href="global.html#removeUser">removeUser</a></li><li><a href="global.html#update">update</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Conversation.html">Conversation</a></li><li><a href="Message.html">Message</a></li><li><a href="User.html">User</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addUser">addUser</a></li><li><a href="global.html#broadcast">broadcast</a></li><li><a href="global.html#filter">filter</a></li><li><a href="global.html#getFormattedDate">getFormattedDate</a></li><li><a href="global.html#getUser">getUser</a></li><li><a href="global.html#getUserIndex">getUserIndex</a></li><li><a href="global.html#removeUser">removeUser</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#update">update</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Jul 03 2017 22:08:54 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Jul 04 2017 00:41:30 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

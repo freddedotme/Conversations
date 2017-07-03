@@ -4,8 +4,8 @@
   "description": "Websocket-based chatroom.",
   "main": "app.js",
   "scripts": {
-    "test": "node app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "jsdoc": "./node_modules/.bin/jsdoc *.js classes/*.js client/*.js -d ./docs"
   },
   "repository": {
     "type": "git",
