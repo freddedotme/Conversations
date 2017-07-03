@@ -8,7 +8,7 @@ http://fredde.me/Conversations/
 1. Clone this repo.
 2. `cd Conversations/` 
 3. `npm install`
-4. Open up `config.json` and modify settings for your liking.
+4. Open up `config.json` and modify the settings for your liking.
 5. `npm start`
 6. Open up `client/client.html`.
 7. Make an awesome interface and send a pull request.
