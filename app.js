@@ -1,12 +1,12 @@
-// -----------------------------------------------------------------------------
-// | Default settings
-// ----------------------------------------------------------------------------
-
 const User = require('./classes/user.js');
 const Conversation = require('./classes/conversation.js');
 
 const config = require('./config.json');
 const ws = require('nodejs-websocket');
+
+// -----------------------------------------------------------------------------
+// | Default settings
+// ----------------------------------------------------------------------------
 
 let port = 8001;
 let maxClients = 256;
